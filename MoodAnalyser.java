@@ -24,18 +24,25 @@ public class MoodAnalyser {
 
 		RF1: AnalyseMood method will 
 		change to support no parameters
+
+		UC2: Handle Exception if User 
+		Provides Invalid Mood, return Happy
 	*/
 
     public String analyseMood() {
-        if (this.message.toLowerCase().contains("sad")) {
-            return "SAD";
-        } else {
+        try{
+			if (this.message.toLowerCase().contains("sad")) {
+				return "SAD";
+			} else {
+				return "HAPPY";
+			}
+		}catch(Exception e){
 			return "HAPPY";
-        }
+		}
     }
 
     public static void main(String[] args) {
-		MoodAnalyser moodAnalyser = new MoodAnalyser();
+		MoodAnalyser moodAnalyser = new MoodAnalyser(null);
 		System.out.println(moodAnalyser.analyseMood());
     }
 }
