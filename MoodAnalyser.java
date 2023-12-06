@@ -1,3 +1,16 @@
+enum MoodAnalysisError {
+    NULL_MOOD,
+    EMPTY_MOOD
+}
+
+class MoodAnalysisException extends Exception {
+    MoodAnalysisError error;
+
+    public MoodAnalysisException(MoodAnalysisError error) {
+        this.error = error;
+    }
+}
+
 public class MoodAnalyser {
 	String message;
 
@@ -8,10 +21,7 @@ public class MoodAnalyser {
 	*/
 
 	MoodAnalyser(){
-		String mood1 = "I am in a Happy mood.";
-		String mood2 = "I am in a Sad mood.";
-		int chance = (int)(Math.random()*2);
-		this.message = chance == 1 ? mood1 : mood2;
+		this.message = "";
 	}
 
 	MoodAnalyser(String message){
@@ -27,22 +37,51 @@ public class MoodAnalyser {
 
 		UC2: Handle Exception if User 
 		Provides Invalid Mood, return Happy
+
+		UC3: Different responses for
+		Null and Empty Messages
 	*/
 
-    public String analyseMood() {
-        try{
-			if (this.message.toLowerCase().contains("sad")) {
-				return "SAD";
-			} else {
-				return "HAPPY";
-			}
-		}catch(Exception e){
-			return "HAPPY";
-		}
+    public String analyseMood() throws MoodAnalysisException {
+        if (this.message == null || this.message.isEmpty()) {
+            throw new MoodAnalysisException(MoodAnalysisError.EMPTY_MOOD);
+        }
+        if (this.message.toLowerCase().contains("sad")) {
+            return "SAD";
+        } 
+		else if (this.message.toLowerCase().contains("happy")) {
+            return "HAPPY";
+        } 
+		else {
+            throw new MoodAnalysisException(MoodAnalysisError.NULL_MOOD);
+        }
     }
 
-    public static void main(String[] args) {
-		MoodAnalyser moodAnalyser = new MoodAnalyser(null);
-		System.out.println(moodAnalyser.analyseMood());
+    public static void main(String[] args) throws MoodAnalysisException {
+		try {
+            MoodAnalyser moodAnalyser = new MoodAnalyser("I am in A Sad Mood");
+            String mood = moodAnalyser.analyseMood();
+            System.out.println("Mood: " + mood);
+            
+			MoodAnalyser moodAnalyser1 = new MoodAnalyser("I am in A Happy Mood");
+            String mood1 = moodAnalyser1.analyseMood();
+            System.out.println("Mood: " + mood1);
+            
+			// MoodAnalyser moodAnalyser2 = new MoodAnalyser("I am in Any Mood");
+            // String mood2 = moodAnalyser2.analyseMood();
+            // System.out.println("Mood: " + mood2);
+
+            MoodAnalyser nullMoodAnalyser = new MoodAnalyser(null);
+            String nullMood = nullMoodAnalyser.analyseMood();
+            System.out.println("Mood: " + nullMood);
+        } 
+		catch (MoodAnalysisException e) 
+		{
+            if (e.error == MoodAnalysisError.EMPTY_MOOD) {
+                System.out.println("Error: Empty Mood Provided");
+            } else if (e.error == MoodAnalysisError.NULL_MOOD) {
+                System.out.println("Error: No Mood Entered");
+            }
+        }
     }
 }
